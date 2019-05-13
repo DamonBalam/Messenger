@@ -19142,7 +19142,13 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_boot
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('example-component', __webpack_require__(334));
 
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
-    el: '#app'
+    el: '#app',
+    methods: {
+        logout: function logout() {
+            event.preventDefault();
+            document.getElementById('logout-form').submit();
+        }
+    }
 });
 
 /***/ }),

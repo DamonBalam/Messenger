@@ -21,8 +21,10 @@
 
 </head>
 <body>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
     <div id="app">
-
         <b-navbar toggleable="sm" type="dark" variant="primary">
             <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
             <b-navbar-brand href="{{ url('/') }}">{{ config('app.name', 'Laravel') }}</b-navbar-brand>
@@ -32,8 +34,10 @@
                   <b-nav-item href="{{ route('login') }}">Iniciar Sesión</b-nav-item>
                   <b-nav-item href="{{ route('register') }}">Registro</b-nav-item>
                 @else       
-                  <b-nav-item-dropdown text="Username" right>
-                    <b-dropdown-item href="#">Cerrar Sesión</b-dropdown-item>
+                  <b-nav-item-dropdown text="{{ auth()->user()->name }}" right>
+                    <b-dropdown-item href="#" @click="logout">
+                        Cerrar Sesión
+                    </b-dropdown-item>
                   </b-nav-item-dropdown>
                   @endguest
                 </b-navbar-nav>

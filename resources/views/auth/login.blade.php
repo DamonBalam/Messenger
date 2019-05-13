@@ -5,18 +5,29 @@
     <b-row align-h="center">
         <b-col cols="8">
 
-            <b-card title="Inicio de Sesión">
-                <b-alert show>
-                    Por favor ingresa tus datos
-                </b-alert>
+            <b-card title="Inicio de Sesión" class="my-3">                
+                
+                @if ($errors->any())
+                    <b-alert show variant="danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{$error}}</li>
+                            @endforeach
+                        </ul>
+                    </b-alert>
+                @else
+                    <b-alert show>
+                        Por favor ingresa tus datos
+                    </b-alert>
+                @endif
+
               <b-form method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}">
                         @csrf
                         
                         <!-- correo electronico -->
                         <b-form-group
                             label="Correo electrónico:"
-                            label-for="email"
-                            description="Nunca compartiremos tu correo. Está seguro con nosotros"
+                            label-for="email"                            
                           >
                             <b-form-input
                               id="email"
@@ -31,16 +42,14 @@
                         
                         <!-- password -->
                         <b-form-group
-                            label="Password:"
+                            label="Contraseña:"
                             label-for="password"
                           >
                             <b-form-input
-                              id="password"
+                              id="password" 
                               type="password"
                               name="password"
                               required
-                              value="{{ old('password') }}"
-                              placeholder="Ingresa tu password"
                             ></b-form-input>
                         </b-form-group>
 

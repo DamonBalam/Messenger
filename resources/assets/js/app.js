@@ -16,7 +16,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    methods:{
+    	logout(){
+    		event.preventDefault();
+            document.getElementById('logout-form').submit();
+    	}
+    }
 });
 
  
