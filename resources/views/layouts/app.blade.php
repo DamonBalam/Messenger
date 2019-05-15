@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html class="h-100">
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -20,11 +20,11 @@
     <!-- Styles -->
 
 </head>
-<body>
+<body class="h-100">
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
-    <div id="app">
+    <div id="app" class="h-100">
         <b-navbar toggleable="sm" type="dark" variant="primary">
             <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
             <b-navbar-brand href="{{ url('/') }}">{{ config('app.name', 'Laravel') }}</b-navbar-brand>
@@ -33,7 +33,7 @@
                 @guest
                   <b-nav-item href="{{ route('login') }}">Iniciar Sesión</b-nav-item>
                   <b-nav-item href="{{ route('register') }}">Registro</b-nav-item>
-                @else       
+                @else
                   <b-nav-item-dropdown text="{{ auth()->user()->name }}" right>
                     <b-dropdown-item href="#" @click="logout">
                         Cerrar Sesión
@@ -44,15 +44,8 @@
             </b-collapse>
         </b-navbar>
 
+        @yield('content')
 
-          
-              
-             
-         
-
-        <main class="py-4">
-            @yield('content')
-        </main>
     </div>
 </body>
 </html>
