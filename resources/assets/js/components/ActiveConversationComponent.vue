@@ -1,44 +1,27 @@
 <template>
     <b-row class="h-100" no-gutters>
         <b-col cols="8" class="h-100">
-            <b-card
-            class="h-100"
-            title="Conversación Activa"
-            footer-bg-variant="light"
-            footer-border-variant="dark">
+            <b-card class="h-100" title="Conversación Activa" footer-bg-variant="light" footer-border-variant="dark">
 
-            <b-media vertical-align="center" class="mb-2">
-                <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="48" alt="placeholder"></b-img>
-                <b-card >
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
-                    Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
-                </b-card>
-            </b-media>
-
-            <b-media right-align vertical-align="center" class="mb-2">
-                <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="48" alt="placeholder"></b-img>
-                <b-card >
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
-                </b-card>
-            </b-media>
+                <message-conversation-component v-for="message in messages" :key="message.id" :written-by-me="message.written_by_me">
+                    {{ message.content }}
+                </message-conversation-component>
 
 
 
+                <div slot="footer">
+                    <b-form  @submit.prevent="sendMessage()" class="mb-0" autocomplete="off">
+                        <b-input-group>
+                            <b-form-input  v-model="content" type="text" placeholder="Escribe un mensaje...">
+                            </b-form-input>
 
+                            <b-input-group-append>
+                                <b-button type="submit" variant="primary">Enviar</b-button>
+                            </b-input-group-append>
 
-            <div slot="footer">
-                <b-form class="mb-0">
-                    <b-input-group>
-                        <b-form-input  type="text" placeholder="Escribe un mensaje...">
-                        </b-form-input>
-
-                        <b-input-group-append>
-                            <b-button variant="primary">Enviar</b-button>
-                        </b-input-group-append>
-
-                    </b-input-group>
-                </b-form>
-            </div>
+                        </b-input-group>
+                    </b-form>
+                </div>
             </b-card>
         </b-col>
         <b-col cols="4">
@@ -58,7 +41,36 @@
 
 <script>
     export default {
+        data() {
+            return {
+                content:'',
+                messages : []
+            }
+        },
+        mounted () {
+            this.getMessages();
+        },
+        methods: {
+            getMessages() {
+                axios.get('api/messages').then((response) => {
+                    console.log(response.data)
+                    this.messages = response.data;
+                });
+            },
+            sendMessage(){
+                const params = {
+                    to_id:2,
+                    content:this.content
+                }
+                axios.post('api/messages',params).then((response) => {
+                    console.log(response.data)
+                    // this.messages = response.data;
+                    this.content = '';
+                    this.getMessages();
 
+                });
+            }
+        },
     }
 </script>
 
