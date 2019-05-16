@@ -7,8 +7,6 @@
                     {{ message.content }}
                 </message-conversation-component>
 
-
-
                 <div slot="footer">
                     <b-form  @submit.prevent="sendMessage()" class="mb-0" autocomplete="off">
                         <b-input-group>
@@ -44,7 +42,8 @@
         data() {
             return {
                 content:'',
-                messages : []
+                messages : [],
+                contactId: 2,
             }
         },
         mounted () {
@@ -52,18 +51,18 @@
         },
         methods: {
             getMessages() {
-                axios.get('api/messages').then((response) => {
-                    console.log(response.data)
+                axios.get(`api/messages?contact_id=${this.contactId}`).then((response) => {
+                    // console.log(response.data)
                     this.messages = response.data;
                 });
             },
             sendMessage(){
                 const params = {
-                    to_id:2,
+                    to_id:this.contactId,
                     content:this.content
                 }
                 axios.post('api/messages',params).then((response) => {
-                    console.log(response.data)
+                    // console.log(response.data)   
                     // this.messages = response.data;
                     this.content = '';
                     this.getMessages();
