@@ -7,18 +7,11 @@
 
         <b-list-group>
 
-            <contact-component v-for="conversation in conversations" :key="conversation.id" :conversation="conversation">
+            <contact-component v-for="conversation in conversations" :key="conversation.id" :conversation="conversation" @click.native="selectConversation(conversation)">
 
             </contact-component>
 
-            <!-- <contact-component variant="dark">
-            </contact-component>
-
-            <contact-component variant="">
-            </contact-component>
-
-            <contact-component variant="secondary">
-            </contact-component> -->
+        
         </b-list-group>
     </div>
 </template>
@@ -39,6 +32,10 @@
                     console.log(response.data)
                     this.conversations = response.data;
                 });
+            },
+            selectConversation(conversation) {
+                // console.log('haciendo click');
+                this.$emit('conversationSelected',conversation);
             }
         },
 

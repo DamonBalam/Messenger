@@ -1,11 +1,13 @@
 <template>
     <b-row class="h-100" no-gutters>
         <b-col cols="8" class="h-100">
-            <b-card class="h-100" title="Conversación Activa" footer-bg-variant="light" footer-border-variant="dark">
+            <b-card no-body class="h-100" title="Conversación Activa" footer-bg-variant="light" footer-border-variant="dark">
 
-                <message-conversation-component v-for="message in messages" :key="message.id" :written-by-me="message.written_by_me">
-                    {{ message.content }}
-                </message-conversation-component>
+                <b-card-body class="card-body-scroll">
+                        <message-conversation-component v-for="message in messages" :key="message.id" :written-by-me="message.written_by_me">
+                            {{ message.content }}
+                        </message-conversation-component>
+                </b-card-body>
 
                 <div slot="footer">
                     <b-form  @submit.prevent="sendMessage()" class="mb-0" autocomplete="off">
@@ -27,7 +29,7 @@
                 <!-- {{-- imagen --}} -->
                 <b-img rounded="circle" blank width="60" height="60" blank-color="#777"  class="m-1" alt="Circle image">
                 </b-img>
-                <p>Usuario seleccionado</p>
+                <p>{{contactName}}</p>
                 <hr>
                 <b-form-checkbox>
                     Desactivar notoficaciones
@@ -39,40 +41,55 @@
 
 <script>
     export default {
+        props: {
+            contactId: Number,
+            contactName: String,
+            messages: Array
+        },
         data() {
             return {
                 content:'',
-                messages : [],
-                contactId: 2,
             }
         },
         mounted () {
-            this.getMessages();
         },
         methods: {
-            getMessages() {
-                axios.get(`api/messages?contact_id=${this.contactId}`).then((response) => {
-                    // console.log(response.data)
-                    this.messages = response.data;
-                });
-            },
             sendMessage(){
                 const params = {
                     to_id:this.contactId,
                     content:this.content
                 }
                 axios.post('api/messages',params).then((response) => {
-                    // console.log(response.data)   
-                    // this.messages = response.data;
-                    this.content = '';
-                    this.getMessages();
-
+                    if (response.data.success) {
+                        this.content = '';
+                        const message = response.data.message;
+                        message.written_by_me = true;
+                        this.$emit('messageCreated' ,message);
+                    }
                 });
+            },
+            scrollToBottom(){
+                const el = document.querySelector('.card-body-scroll');
+                el.scrollTop = el.scrollHeight;
             }
+        },
+        watch: {
+            // messages() {
+            //     setTimeout(()=>{
+            //         this.scrollToBottom();
+            //     },100);
+            // }
+        },
+        updated () {
+             this.scrollToBottom();
         },
     }
 </script>
 
-<style lang="scss" scoped>
+<style >
+.card-body-scroll{
+    max-height: calc(100% - 63px);
+    overflow-y: auto;
+}
 
 </style>
