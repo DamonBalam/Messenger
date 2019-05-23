@@ -6,33 +6,24 @@
         </b-form>
 
         <b-list-group>
-
             <contact-component v-for="conversation in conversations" :key="conversation.id" :conversation="conversation" @click.native="selectConversation(conversation)">
-
             </contact-component>
-
-        
         </b-list-group>
     </div>
 </template>
 
 <script>
     export default {
+        props: {
+            conversations: Array
+        },
         data() {
             return {
-                conversations: []
             }
         },
         mounted () {
-            this.getConversations();
         },
         methods: {
-            getConversations() {
-                axios.get(`api/conversations`).then((response) => {
-                    console.log(response.data)
-                    this.conversations = response.data;
-                });
-            },
             selectConversation(conversation) {
                 // console.log('haciendo click');
                 this.$emit('conversationSelected',conversation);

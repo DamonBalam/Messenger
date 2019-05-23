@@ -2,7 +2,10 @@
      <b-container fluid style="height: calc(100vh - 56px);">
         <b-row class="h-100" no-gutters>
             <b-col cols="4">
-                <contact-list-component @conversationSelected="changeAciveConversation($event)"></contact-list-component>
+                <contact-list-component @conversationSelected="changeAciveConversation($event)"
+                :conversations="conversations">
+
+                </contact-list-component>
             </b-col>
 
             <b-col cols="8">
@@ -24,17 +27,19 @@
         data() {
             return {
                 selectedConversation:null,
-                messages:[]
+                messages:[],
+                conversations:[]
             }
         },
         mounted () {
-            Echo.channel(`users.${this.userId}`)
+            this.getConversations();
+
+            Echo.private(`users.${this.userId}`)
             .listen('MessageSent',(data)=> {
                 const message = data.message;
                 console.log(message);
-                message.written_by_me =false;
+                message.written_by_me = false;
                 this.addMessage(message);
-
             });
         },
         methods: {
@@ -45,13 +50,27 @@
             },
             getMessages() {
                 axios.get(`api/messages?contact_id=${this.selectedConversation.contact_id}`).then((response) => {
-                    // console.log(response.data)
                     this.messages = response.data;
                 });
             },
+            getConversations() {
+                axios.get(`api/conversations`).then((response) => {
+                    console.log(response.data)
+                    this.conversations = response.data;
+                });
+            },
             addMessage(message){
-                if (this.selectedConversation.contact_id == message.to_id) {
 
+                const conversation = this.conversations.find(( conversation ) => {
+                    return conversation.contact_id == message.from_id || conversation.contact_id == message.to_id;
+                });
+
+                const author = this.userId === message.from_id ? 'Tú' : conversation.contact_name;
+
+                conversation.last_message = `${author}: ${message.content}`;
+                conversation.last_time = message.created_at;
+
+                if (this.selectedConversation.contact_id == message.from_id || this.selectedConversation.contact_id == message.to_id) {
                     this.messages.push(message);
                 }
             }

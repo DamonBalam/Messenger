@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Message;
-use DB;
+use App\Message;use DB;
 
 class MessageController extends Controller
 {
