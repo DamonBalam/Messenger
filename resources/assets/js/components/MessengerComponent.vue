@@ -2,9 +2,12 @@
      <b-container fluid style="height: calc(100vh - 56px);">
         <b-row class="h-100" no-gutters>
             <b-col cols="4">
+                <b-form class="my-3 mx-2">
+                    <b-form-input class="text-center py-3 px-2" v-model="querySearch" type="text" placeholder="Buscar contacto">
+                    </b-form-input>
+                </b-form>
                 <contact-list-component @conversationSelected="changeAciveConversation($event)"
-                :conversations="conversations">
-
+                :conversations="conversationsFiltered">
                 </contact-list-component>
             </b-col>
 
@@ -28,7 +31,8 @@
             return {
                 selectedConversation:null,
                 messages:[],
-                conversations:[]
+                conversations:[],
+                querySearch:'',
             }
         },
         mounted () {
@@ -41,25 +45,42 @@
                 message.written_by_me = false;
                 this.addMessage(message);
             });
+
+            Echo.join('messenger')
+            .here((users)=>{
+                // console.log('online', users);
+                users.forEach((user) => this.changeStatus(user,true));
+            })
+            .joining((user)=>{
+                this.changeStatus(user,true);
+            })
+            .leaving((user)=>{
+
+                this.changeStatus(user, false);
+            });
         },
         methods: {
-            changeAciveConversation(conversation){
+            changeAciveConversation(conversation)
+            {
                 console.log('nueva conversación seleccionada', conversation);
                 this.selectedConversation = conversation;
                 this.getMessages();
             },
-            getMessages() {
+            getMessages()
+            {
                 axios.get(`api/messages?contact_id=${this.selectedConversation.contact_id}`).then((response) => {
                     this.messages = response.data;
                 });
             },
-            getConversations() {
+            getConversations()
+            {
                 axios.get(`api/conversations`).then((response) => {
                     console.log(response.data)
                     this.conversations = response.data;
                 });
             },
-            addMessage(message){
+            addMessage(message)
+            {
 
                 const conversation = this.conversations.find(( conversation ) => {
                     return conversation.contact_id == message.from_id || conversation.contact_id == message.to_id;
@@ -73,8 +94,25 @@
                 if (this.selectedConversation.contact_id == message.from_id || this.selectedConversation.contact_id == message.to_id) {
                     this.messages.push(message);
                 }
+            },
+            changeStatus(user, status)
+            {
+                const index = this.conversations.findIndex( (conversation) =>{
+                    return conversation.contact_id == user.id;
+                });
+                if (index >= 0) {
+                    this.$set(this.conversations[index], 'online', status);
+                }
             }
-        }
+        },
+        computed: {
+            conversationsFiltered()
+            {
+                return this.conversations.filter( (conversation) => {
+                 return conversation.contact_name.toLowerCase().includes(this.querySearch.toLowerCase());
+                });
+            }
+        },
 
 
     }
