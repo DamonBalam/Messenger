@@ -3,7 +3,7 @@
             <b-row class="p-2" align-h="center">
                 <!-- {{-- img --}} -->
                 <b-col cols="12" md="3" class="text-center">
-                    <b-img  rounded="circle" blank width="60" height="60" blank-color="#777"  class="m-1" alt="Circle image">
+                    <b-img :src="conversation.contact_image" rounded="circle"  width="60" height="60"  class="m-1">
                     </b-img>
                 </b-col>
                 <!-- {{-- text --}} -->
@@ -27,8 +27,8 @@
 <script>
     export default {
         props: {
-            variant: String,
-            conversation: Object
+            conversation: Object,
+            selected: Boolean
         },
         data(){
             return{
@@ -39,6 +39,9 @@
         computed: {
             lastTime() {
                 return moment(this.conversation.last_time, "YYYY-MM-DD hh:mm:ss").locale('es').fromNow();
+            },
+            variant() {
+                return this.selected ? 'info' : '';
             }
         },
     }

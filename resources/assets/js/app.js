@@ -21,6 +21,7 @@ Vue.component('contact-list-component', require('./components/ContactListCompone
 Vue.component('active-conversation-component', require('./components/ActiveConversationComponent.vue'));
 Vue.component('message-conversation-component', require('./components/MessageConversationComponent.vue'));
 Vue.component('status-component', require('./components/StatusComponent.vue'));
+Vue.component('profile-form-component', require('./components/ProfileComponent.vue'));
 
 const app = new Vue({
     el: '#app',

@@ -1,6 +1,10 @@
 <template>
         <b-list-group>
-            <contact-component v-for="conversation in conversations" :key="conversation.id" :conversation="conversation" @click.native="selectConversation(conversation)">
+            <contact-component v-for="conversation in conversations"
+            :key="conversation.id"
+            :conversation="conversation"
+            :selected="selectConversationId === conversation.id"
+            @click.native="selectConversation(conversation)">
             </contact-component>
         </b-list-group>
 </template>
@@ -12,7 +16,8 @@
         },
         data() {
             return {
-                contact_name:''
+                contact_name:'',
+                selectConversationId: null
             }
         },
         mounted () {
@@ -20,6 +25,7 @@
         methods: {
             selectConversation(conversation) {
                 // console.log('haciendo click');
+                this.selectConversationId = conversation.id;
                 this.$emit('conversationSelected',conversation);
             },
             searchConctact()

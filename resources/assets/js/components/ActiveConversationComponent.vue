@@ -4,7 +4,9 @@
             <b-card no-body class="h-100" title="Conversación Activa" footer-bg-variant="light" footer-border-variant="dark">
 
                 <b-card-body class="card-body-scroll">
-                        <message-conversation-component v-for="message in messages" :key="message.id" :written-by-me="message.written_by_me">
+                        <message-conversation-component v-for="message in messages" :key="message.id" :written-by-me="message.written_by_me"
+                        :image="message.written_by_me ? myImage : contactImage"
+                        >
                             {{ message.content }}
                         </message-conversation-component>
                 </b-card-body>
@@ -27,7 +29,7 @@
         <b-col cols="4">
             <b-card class="h-100">
                 <!-- {{-- imagen --}} -->
-                <b-img rounded="circle" blank width="60" height="60" blank-color="#777"  class="m-1" alt="Circle image">
+                <b-img rounded="circle" :src="contactImage" width="60" height="60" class="m-1" >
                 </b-img>
                 <p>{{contactName}}</p>
                 <hr>
@@ -44,6 +46,8 @@
         props: {
             contactId: Number,
             contactName: String,
+            contactImage: String,
+            myImage: String,
             messages: Array
         },
         data() {
