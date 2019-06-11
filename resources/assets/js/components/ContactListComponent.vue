@@ -22,9 +22,9 @@
                 });
             },
             isSelected(conversation) {
-                if (this.selectedConversation) {
-                    return this.selectedConversation === conversation.id;
-                }
+                if (this.selectedConversation)
+                    return this.selectedConversation.id === conversation.id;
+
                 return false;
             }
         },

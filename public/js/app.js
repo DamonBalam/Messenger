@@ -1692,7 +1692,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         sendMessage: function sendMessage() {
-            this.$store.dispatch('postMessage', this.content);
+            var _this = this;
+
+            this.$store.dispatch('postMessage', this.content).then(function () {
+                _this.content = '';
+            });
         },
         scrollToBottom: function scrollToBottom() {
             var el = document.querySelector('.card-body-scroll');
@@ -1830,9 +1834,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         isSelected: function isSelected(conversation) {
-            if (this.selectedConversation) {
-                return this.selectedConversation === conversation.id;
-            }
+            if (this.selectedConversation) return this.selectedConversation.id === conversation.id;
+
             return false;
         }
     },
@@ -1915,7 +1918,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var conversationId = _this.$route.params.conversationId;
             if (conversationId) {
                 var conversation = _this.$store.getters.getConversationById(conversationId);
-                console.log(conversation);
+                // console.log(conversation);
                 _this.$store.dispatch('getMessages', conversation);
             }
         });
@@ -1948,6 +1951,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (index >= 0) {
                 this.$set(this.$store.state.conversations[index], 'online', status);
             }
+        },
+        addMessage: function addMessage(message) {
+            this.$store.commit('addMessage', message);
         }
     },
     computed: {
@@ -78695,7 +78701,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
     },
     actions: {
         getMessages: function getMessages(context, conversation) {
-            axios.get('/api/messages?contact_id=' + conversation.contact_id).then(function (response) {
+            return axios.get('/api/messages?contact_id=' + conversation.contact_id).then(function (response) {
                 context.commit('selectConversation', conversation);
                 context.commit('newMessagesList', response.data);
             });
@@ -78711,7 +78717,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
                 content: newMessage
             };
 
-            axios.post('/api/messages', params).then(function (response) {
+            return axios.post('/api/messages', params).then(function (response) {
                 if (response.data.success) {
                     newMessage = '';
 

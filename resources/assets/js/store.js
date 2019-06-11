@@ -45,7 +45,7 @@ export default new Vuex.Store({
     },
     actions: {
         getMessages(context, conversation) {
-            axios.get(`/api/messages?contact_id=${conversation.contact_id}`)
+            return axios.get(`/api/messages?contact_id=${conversation.contact_id}`)
             .then(
                 response => {
                     context.commit('selectConversation', conversation);
@@ -65,7 +65,7 @@ export default new Vuex.Store({
                 content: newMessage
             };
 
-            axios.post('/api/messages', params)
+            return axios.post('/api/messages', params)
             .then(response => {
                 if (response.data.success) {
                     newMessage = '';

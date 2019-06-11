@@ -27,7 +27,7 @@
                     const conversationId = this.$route.params.conversationId;
                     if (conversationId) {
                         const conversation = this.$store.getters.getConversationById(conversationId);
-                        console.log(conversation);
+                        // console.log(conversation);
                         this.$store.dispatch('getMessages', conversation);
                     }
                 });
@@ -62,6 +62,9 @@
                 if (index >= 0) {
                     this.$set(this.$store.state.conversations[index], 'online', status);
                 }
+            },
+            addMessage (message) {
+                this.$store.commit('addMessage',message);
             }
         },
         computed: {

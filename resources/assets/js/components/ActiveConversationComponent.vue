@@ -51,7 +51,11 @@
         },
         methods: {
             sendMessage(){
-                this.$store.dispatch('postMessage', this.content);
+                this.$store
+                    .dispatch('postMessage', this.content)
+                    .then( () => {
+                        this.content = '';
+                    });
             },
             scrollToBottom(){
                 const el = document.querySelector('.card-body-scroll');
