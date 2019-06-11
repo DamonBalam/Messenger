@@ -5,14 +5,9 @@
                 <contact-form-component/>
                 <contact-list-component/>
             </b-col>
-
             <b-col cols="8">
                 <active-conversation-component v-if="selectedConversation"
-                :contact-id="selectedConversation.contact_id"
-                :contact-name="selectedConversation.contact_name"
-                :contact-image="selectedConversation.contact_image"
-                :my-image="myImageUrl"
-                @messageCreated="addMessage($event)"/>
+                />
             </b-col>
         </b-row>
     </b-container>
@@ -23,12 +18,19 @@
         props: {
             user: Object
         },
-        data() {
-            return {
-            }
-        },
         mounted () {
-            this.$store.dispatch('getConversations');
+            this.$store.commit('setUser', this.user);
+
+            this.$store
+                .dispatch('getConversations')
+                .then(() => {
+                    const conversationId = this.$route.params.conversationId;
+                    if (conversationId) {
+                        const conversation = this.$store.getters.getConversationById(conversationId);
+                        console.log(conversation);
+                        this.$store.dispatch('getMessages', conversation);
+                    }
+                });
 
             Echo.private(`users.${this.user.id}`)
             .listen('MessageSent',(data)=> {
@@ -52,21 +54,6 @@
             });
         },
         methods: {
-            addMessage(message)
-            {
-                const conversation = this.$store.state.conversations.find(( conversation ) => {
-                    return conversation.contact_id == message.from_id || conversation.contact_id == message.to_id;
-                });
-
-                const author = this.user.id === message.from_id ? 'Tú' : conversation.contact_name;
-
-                conversation.last_message = `${author}: ${message.content}`;
-                conversation.last_time = message.created_at;
-
-                if (this.selectedConversation.contact_id == message.from_id || this.selectedConversation.contact_id == message.to_id) {
-                    this.$store.commit('addMessage',message);
-                }
-            },
             changeStatus(user, status)
             {
                 const index = this.$store.state.conversations.findIndex( (conversation) =>{
@@ -78,10 +65,6 @@
             }
         },
         computed: {
-            myImageUrl()
-            {
-                return `/users/${this.user.image}`;
-            },
             selectedConversation() {
                 return this.$store.state.selectedConversation;
             }

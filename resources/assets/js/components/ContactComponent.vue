@@ -34,8 +34,6 @@
             return{
             }
         },
-        mounted() {
-        },
         computed: {
             lastTime() {
                 return moment(this.conversation.last_time, "YYYY-MM-DD hh:mm:ss").locale('es').fromNow();

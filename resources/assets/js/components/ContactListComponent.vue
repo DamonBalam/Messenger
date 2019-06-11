@@ -15,17 +15,16 @@
             return {
             }
         },
-        mounted () {
-        },
         methods: {
             selectConversation(conversation) {
-                this.$store.dispatch('getMessages', conversation);
+                this.$router.push(`/chat/${conversation.id}`, () => {
+                    this.$store.dispatch('getMessages', conversation);
+                });
             },
             isSelected(conversation) {
                 if (this.selectedConversation) {
                     return this.selectedConversation === conversation.id;
                 }
-
                 return false;
             }
         },
